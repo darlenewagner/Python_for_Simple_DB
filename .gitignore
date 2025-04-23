@@ -1,0 +1,7 @@
+#Ignore these directories:
+bin/
+include/
+lib/
+
+#Ignore these files:
+lib64
