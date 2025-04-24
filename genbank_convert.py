@@ -51,3 +51,30 @@ args = parser.parse_args()
 
 inFolder = args.dir
 
+
+
+origWD = os.getcwd()
+
+#print("{}/{}".format(origWD, inFolder))
+
+gbkFolder = re.sub(r'\.\.', '', inFolder)
+
+parent = getParentDir(origWD)
+
+
+#print(getGBK[0])
+
+os.chdir(parent + gbkFolder)
+
+print(os.getcwd())
+
+output_handle = open("see.txt", "w")
+
+getGBK = os.listdir(os.getcwd())
+
+#print(getGBK[0])
+
+input_handle = open(getGBK[0], 'r+')
+
+for see in SeqIO.parse(input_handle, 'genbank'):
+        print(len(see))
