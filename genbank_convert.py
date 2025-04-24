@@ -1,0 +1,53 @@
+#!/usr/bin/python
+
+import sys
+import os.path
+import argparse
+import re
+import logging
+import warnings
+import subprocess
+import csv
+from os import listdir
+from os.path import isfile, join
+
+### Requires Biopython ###
+
+from Bio import SeqIO
+
+### Does not require pandas ###
+
+def readable_dir(prospective_dir):
+        if not os.path.isdir(prospective_dir):
+                raise argparse.ArgumentTypeError("readable_dir:{0} is not a valid path".format(prospective_dir))
+        if os.access(prospective_dir, os.R_OK):
+                if( not prospective_dir.endswith("/") ):
+                        prospective_dir = prospective_dir + "/"
+                return prospective_dir
+        else:
+                raise argparse.ArgumentTypeError("readable_dir:{0} is not a readable dir".format(prospective_dir))
+
+
+def getParentDir(filePathString):
+        splitStr = re.split(pattern='/', string=filePathString)
+        folderCount = len(splitStr) - 1
+        isolatePath=splitStr[0]
+        ii = 1
+        while ii < folderCount:
+                isolatePath = isolatePath + "/" + splitStr[ii]
+                ii = ii + 1
+        return isolatePath
+
+logger = logging.getLogger("genbank_convert.py")
+logger.setLevel(logging.INFO)
+
+parser = argparse.ArgumentParser(description='List RefSeq .gbk files from input folder.', usage="genbank_convert.py ../Rotavirus/Genbank/")
+
+parser.add_argument('dir', type=readable_dir, action='store')
+
+parser.add_argument('--seqid2taxid', default='../centrifuge/seqid2taxid.map')
+
+args = parser.parse_args()
+
+inFolder = args.dir
+
