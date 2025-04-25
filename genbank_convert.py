@@ -61,20 +61,18 @@ gbkFolder = re.sub(r'\.\.', '', inFolder)
 
 parent = getParentDir(origWD)
 
+getGBK = os.listdir(parent + gbkFolder)
 
-#print(getGBK[0])
+myPath = parent + gbkFolder + getGBK[0]
 
-os.chdir(parent + gbkFolder)
+input_handle = open(myPath, 'r+')
 
-print(os.getcwd())
+#print(input_handle)
 
-output_handle = open("see.txt", "w")
+protCoords = []
 
-getGBK = os.listdir(os.getcwd())
-
-#print(getGBK[0])
-
-input_handle = open(getGBK[0], 'r+')
-
-SeqIO.convert(input_handle, 'genbank', output_handle, 'fasta')
+for line in input_handle:
+        if(re.search(r'CDS', line)):
+                temp = line.split()
+                protCoords.append(temp[1])
 
