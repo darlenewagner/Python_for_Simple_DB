@@ -76,5 +76,5 @@ getGBK = os.listdir(os.getcwd())
 
 input_handle = open(getGBK[0], 'r+')
 
-for see in SeqIO.parse(input_handle, 'genbank'):
-        print(len(see))
+SeqIO.convert(input_handle, 'genbank', output_handle, 'fasta')
+
