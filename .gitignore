@@ -3,6 +3,7 @@ bin/
 include/
 lib/
 convert/
+temp_output/
 
 #Ignore these files:
 lib64

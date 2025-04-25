@@ -51,9 +51,9 @@ args = parser.parse_args()
 
 inFolder = args.dir
 
-
-
 origWD = os.getcwd()
+
+outNucl = origWD + "/temp_output/dna.fasta"
 
 #print("{}/{}".format(origWD, inFolder))
 
@@ -64,6 +64,8 @@ parent = getParentDir(origWD)
 getGBK = os.listdir(parent + gbkFolder)
 
 myPath = parent + gbkFolder + getGBK[0]
+
+os.system("python convert/seqconverter.py --informat genbank -i {} > {}".format(inFolder+getGBK[0], outNucl))
 
 input_handle = open(myPath, 'r+')
 
