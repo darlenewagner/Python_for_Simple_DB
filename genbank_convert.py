@@ -78,3 +78,15 @@ for line in input_handle:
                 temp = line.split()
                 protCoords.append(temp[1])
 
+coordinates = protCoords[0].split('..')
+
+with open(outNucl, "r") as fasHandle, open("./temp_output/cds.fasta", "w") as output_handle:
+        for record in SeqIO.parse(fasHandle, "fasta"):
+            trimmed_seq = record.seq[int(coordinates[0])-1:int(coordinates[1])]
+            record.seq = trimmed_seq
+            SeqIO.write(record, output_handle, "fasta")
+
+
+os.system("python convert/seqconverter.py --informat fasta --translate 1 -i {} > {}".format("./temp_output/cds.fasta", "./temp_output/aa.faa"))
+
+
