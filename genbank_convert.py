@@ -80,9 +80,10 @@ getGBK = os.listdir(parent + gbkFolder)
 
 for gbk in getGBK:
         myPath = parent + gbkFolder + gbk
-        logger.info("Converting file, {}".format(gbk))
-        os.system("python convert/seqconverter.py --informat genbank -i {} > {}".format(inFolder+getGBK[0], outNucl))
         input_handle = open(myPath, 'r+')
+        logger.info("Converting file, {}".format(gbk))
+        os.system("python convert/seqconverter.py --informat genbank -i {} > {}".format(inFolder+gbk, outNucl))
+
         protCoords = []
 
         for line in input_handle:
@@ -98,12 +99,12 @@ for gbk in getGBK:
                         record.seq = trimmed_seq
                         SeqIO.write(record, output_handle, "fasta")
 
-        cleanGBK = re.sub(r'\.gbk', '', getGBK[0])
+        cleanGBK = re.sub(r'\.gbk', '', gbk)
             
         if(args.outdir2 is not None):
-                os.system("python convert/seqconverter.py --informat genbank -i {} > {}{}".format(inFolder+getGBK[0], args.outdir1, cleanGBK+'.fasta'))
+                os.system("python convert/seqconverter.py --informat genbank -i {} > {}{}".format(inFolder+gbk, args.outdir1, cleanGBK+'.fasta'))
                 os.system("python convert/seqconverter.py --informat fasta --translate 1 -i {} > {}{}".format("./temp_output/cds.fasta", args.outdir2, cleanGBK+'.faa'))
         else:
-                os.system("python convert/seqconverter.py --informat genbank -i {} > {}{}".format(inFolder+getGBK[0], args.outdir1, cleanGBK+'.fasta'))
+                os.system("python convert/seqconverter.py --informat genbank -i {} > {}{}".format(inFolder+gbk, args.outdir1, cleanGBK+'.fasta'))
 
 
