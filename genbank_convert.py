@@ -11,7 +11,9 @@ import csv
 from os import listdir
 from os.path import isfile, join
 
-### Requires Biopython ###
+### Generates nucleotide .fasta and (multi)fasta-formatted amino acid files from GenBank-formatted input ###
+### Input folder required and Output1 folder required.  Output2 folder optional.
+### Requires Biopython and installation of seqconverter.py ###
 
 from Bio import SeqIO
 
@@ -43,13 +45,17 @@ logger.setLevel(logging.INFO)
 
 parser = argparse.ArgumentParser(description='List RefSeq .gbk files from input folder.', usage="genbank_convert.py ../Rotavirus/Genbank/")
 
-parser.add_argument('dir', type=readable_dir, action='store')
+parser.add_argument('indir', type=readable_dir, action='store')
+
+parser.add_argument('outdir1', type=readable_dir, action='store')
+
+parser.add_argument('--outdir2', type=readable_dir, action='store')
 
 parser.add_argument('--seqid2taxid', default='../centrifuge/seqid2taxid.map')
 
 args = parser.parse_args()
 
-inFolder = args.dir
+inFolder = args.indir
 
 origWD = os.getcwd()
 
