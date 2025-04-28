@@ -93,7 +93,12 @@ with open(outNucl, "r") as fasHandle, open("./temp_output/cds.fasta", "w") as ou
             SeqIO.write(record, output_handle, "fasta")
 
 
+cleanGBK = re.sub(r'\.gbk', '', getGBK[0])
+            
 if(args.outdir2 is not None):
-        os.system("python convert/seqconverter.py --informat fasta --translate 1 -i {} > {}{}".format("./temp_output/cds.fasta", args.outdir2, getGBK[0]+'.faa'))
+        os.system("python convert/seqconverter.py --informat genbank -i {} > {}{}".format(inFolder+getGBK[0], args.outdir1, cleanGBK+'.fasta'))
+        os.system("python convert/seqconverter.py --informat fasta --translate 1 -i {} > {}{}".format("./temp_output/cds.fasta", args.outdir2, cleanGBK+'.faa'))
+else:
+        os.system("python convert/seqconverter.py --informat genbank -i {} > {}{}".format(inFolder+getGBK[0], args.outdir1, cleanGBK+'.fasta'))
 
 
