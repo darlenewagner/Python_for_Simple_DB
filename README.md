@@ -16,3 +16,6 @@
 
 `python3 -m pip install pandas --target convert/`
 
+### Running with multiple Genbank file input plus nucleotide .fasta and protein .faa output
+
+`bin/python3 genbank_convert.py ../Rotavirus/Genbank/ ../Rotavirus/Nucleotide/ --outdir2 ../Rotavirus/Protein/`
