@@ -67,38 +67,43 @@ gbkFolder = re.sub(r'\.\.', '', inFolder)
 
 parent = getParentDir(origWD)
 
+### Initialize logger.info ###
+ch = logging.StreamHandler()
+ch.setLevel(logging.INFO)
+formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+### Add formatter to ch
+ch.setFormatter(formatter)
+### Add ch to logger
+logger.addHandler(ch)
+
 getGBK = os.listdir(parent + gbkFolder)
 
-myPath = parent + gbkFolder + getGBK[0]
+for gbk in getGBK:
+        myPath = parent + gbkFolder + gbk
+        logger.info("Converting file, {}".format(gbk))
+        os.system("python convert/seqconverter.py --informat genbank -i {} > {}".format(inFolder+getGBK[0], outNucl))
+        input_handle = open(myPath, 'r+')
+        protCoords = []
 
-os.system("python convert/seqconverter.py --informat genbank -i {} > {}".format(inFolder+getGBK[0], outNucl))
+        for line in input_handle:
+                if(re.search(r'CDS', line)):
+                        temp = line.split()
+                        protCoords.append(temp[1])
 
-input_handle = open(myPath, 'r+')
+        coordinates = protCoords[0].split('..')
 
-#print(input_handle)
+        with open(outNucl, "r") as fasHandle, open("./temp_output/cds.fasta", "w") as output_handle:
+                for record in SeqIO.parse(fasHandle, "fasta"):
+                        trimmed_seq = record.seq[int(coordinates[0])-1:int(coordinates[1])]
+                        record.seq = trimmed_seq
+                        SeqIO.write(record, output_handle, "fasta")
 
-protCoords = []
-
-for line in input_handle:
-        if(re.search(r'CDS', line)):
-                temp = line.split()
-                protCoords.append(temp[1])
-
-coordinates = protCoords[0].split('..')
-
-with open(outNucl, "r") as fasHandle, open("./temp_output/cds.fasta", "w") as output_handle:
-        for record in SeqIO.parse(fasHandle, "fasta"):
-            trimmed_seq = record.seq[int(coordinates[0])-1:int(coordinates[1])]
-            record.seq = trimmed_seq
-            SeqIO.write(record, output_handle, "fasta")
-
-
-cleanGBK = re.sub(r'\.gbk', '', getGBK[0])
+        cleanGBK = re.sub(r'\.gbk', '', getGBK[0])
             
-if(args.outdir2 is not None):
-        os.system("python convert/seqconverter.py --informat genbank -i {} > {}{}".format(inFolder+getGBK[0], args.outdir1, cleanGBK+'.fasta'))
-        os.system("python convert/seqconverter.py --informat fasta --translate 1 -i {} > {}{}".format("./temp_output/cds.fasta", args.outdir2, cleanGBK+'.faa'))
-else:
-        os.system("python convert/seqconverter.py --informat genbank -i {} > {}{}".format(inFolder+getGBK[0], args.outdir1, cleanGBK+'.fasta'))
+        if(args.outdir2 is not None):
+                os.system("python convert/seqconverter.py --informat genbank -i {} > {}{}".format(inFolder+getGBK[0], args.outdir1, cleanGBK+'.fasta'))
+                os.system("python convert/seqconverter.py --informat fasta --translate 1 -i {} > {}{}".format("./temp_output/cds.fasta", args.outdir2, cleanGBK+'.faa'))
+        else:
+                os.system("python convert/seqconverter.py --informat genbank -i {} > {}{}".format(inFolder+getGBK[0], args.outdir1, cleanGBK+'.fasta'))
 
 
